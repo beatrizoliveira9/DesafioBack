@@ -1,16 +1,28 @@
-// Função de middleware para validar os campos de uma requisição
-exports.validateFields = (req, res, next) => {
-    // Verifica se todos os campos obrigatórios estão presentes na requisição
-    const { nome, sobrenome, email, idade } = req.body;
-    if (!nome || !sobrenome || !email || !idade) {
-        return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+function validarCamposMiddleware(req, res, next) {
+    const { nome, sobrenome, email, idade, descricao, preco, data_atualizado } = req.body;
+
+    // Validação dos campos
+    if (!nome || !sobrenome || !email || !idade || !descricao || !preco || !data_atualizado) {
+        return res.status(400).json({ mensagem: 'Todos os campos são obrigatórios.' });
     }
 
-    // Verifica se o campo 'idade' é um número inteiro
-    if (typeof idade !== 'number' || !Number.isInteger(idade)) {
-        return res.status(400).json({ message: 'A idade deve ser um número inteiro' });
+    // Verifica se o preço é um número válido
+    if (isNaN(preco) || preco <= 0) {
+        return res.status(400).json({ mensagem: 'O preço deve ser um número positivo.' });
     }
 
-    // Se todos os campos forem válidos, passa para o próximo middleware
+    // Verifica se a idade é um número válido
+    if (isNaN(idade) || idade <= 0) {
+        return res.status(400).json({ mensagem: 'A idade deve ser um número positivo.' });
+    }
+
+    // Verifica se a data de atualização é válida
+    if (isNaN(Date.parse(data_atualizado))) {
+        return res.status(400).json({ mensagem: 'Data de atualização inválida.' });
+    }
+
+    // Se todas as validações passarem, continua para o próximo middleware
     next();
-};
+}
+
+module.exports = validarCamposMiddleware;

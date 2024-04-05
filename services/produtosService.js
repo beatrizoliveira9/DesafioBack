@@ -1,31 +1,24 @@
-const connection = require('../configs/database');
+const produtosModel = require('../models/produtosModel');
 
-// Função para buscar todos os produtos
-exports.getAllProdutos = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM produtos', (error, results) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            resolve(results);
-        });
-    });
-};
+async function getAllProdutos() {
+    return await produtosModel.getAllProdutos();
+}
 
-// Função para buscar um produto pelo ID
-exports.getProdutoById = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM produtos WHERE id = ?', [id], (error, results) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            if (results.length === 0) {
-                resolve(null); // Produto não encontrado
-                return;
-            }
-            resolve(results[0]); // Retorna o produto encontrado
-        });
-    });
+async function createProduto(nome, descricao, preco, data_atualizado) {
+    return await produtosModel.createProduto(nome, descricao, preco, data_atualizado);
+}
+
+async function updateProduto(id, nome, descricao, preco, data_atualizado) {
+    return await produtosModel.updateProduto(id, nome, descricao, preco, data_atualizado);
+}
+
+async function deleteProduto(id) {
+    return await produtosModel.deleteProduto(id);
+}
+
+module.exports = {
+    getAllProdutos,
+    createProduto,
+    updateProduto,
+    deleteProduto
 };

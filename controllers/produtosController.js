@@ -1,61 +1,49 @@
-// Importando o serviço de produtos para manipular os dados do banco de dados
+const express = require('express');
+const router = express.Router();
 const produtosService = require('../services/produtosService');
 
 // Endpoint para buscar todos os produtos
-exports.getAllProdutos = async (req, res, next) => {
+router.get('/produtos', async (req, res, next) => {
     try {
         const produtos = await produtosService.getAllProdutos();
         res.json(produtos);
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        next(err);
     }
-};
-
-// Endpoint para buscar um produto pelo ID
-exports.getProdutoById = async (req, res, next) => {
-    const { id } = req.params;
-    try {
-        const produto = await produtosService.getProdutoById(id);
-        if (!produto) {
-            res.status(404).json({ message: 'Produto não encontrado' });
-            return;
-        }
-        res.json(produto);
-    } catch (error) {
-        next(error);
-    }
-};
+});
 
 // Endpoint para criar um novo produto
-exports.createProduto = async (req, res, next) => {
+router.post('/produtos', async (req, res, next) => {
     const { nome, descricao, preco, data_atualizado } = req.body;
     try {
         const novoProduto = await produtosService.createProduto(nome, descricao, preco, data_atualizado);
         res.status(201).json(novoProduto);
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        next(err);
     }
-};
+});
 
 // Endpoint para atualizar um produto existente
-exports.updateProduto = async (req, res, next) => {
-    const { id } = req.params;
+router.put('/produtos/:id', async (req, res, next) => {
+    const id = req.params.id;
     const { nome, descricao, preco, data_atualizado } = req.body;
     try {
         const produtoAtualizado = await produtosService.updateProduto(id, nome, descricao, preco, data_atualizado);
         res.json(produtoAtualizado);
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        next(err);
     }
-};
+});
 
-// Endpoint para excluir um produto existente
-exports.deleteProduto = async (req, res, next) => {
-    const { id } = req.params;
+// Endpoint para excluir um produto
+router.delete('/produtos/:id', async (req, res, next) => {
+    const id = req.params.id;
     try {
         await produtosService.deleteProduto(id);
-        res.json({ message: 'Produto excluído com sucesso' });
-    } catch (error) {
-        next(error);
+        res.sendStatus(204);
+    } catch (err) {
+        next(err);
     }
-};
+});
+
+module.exports = router;

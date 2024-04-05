@@ -14,18 +14,27 @@ exports.getAllClientes = () => {
 };
 
 // Função para buscar um cliente pelo ID
-exports.getClienteById = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM clientes WHERE id = ?', [id], (error, results) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            if (results.length === 0) {
-                resolve(null); // Cliente não encontrado
-                return;
-            }
-            resolve(results[0]); // Retorna o cliente encontrado
-        });
-    });
+const clientesModel = require('../models/clientesModel');
+
+async function getAllClientes() {
+    return await clientesModel.getAllClientes();
+}
+
+async function createCliente(nome, sobrenome, email, idade) {
+    return await clientesModel.createCliente(nome, sobrenome, email, idade);
+}
+
+async function updateCliente(id, nome, sobrenome, email, idade) {
+    return await clientesModel.updateCliente(id, nome, sobrenome, email, idade);
+}
+
+async function deleteCliente(id) {
+    return await clientesModel.deleteCliente(id);
+}
+
+module.exports = {
+    getAllClientes,
+    createCliente,
+    updateCliente,
+    deleteCliente
 };

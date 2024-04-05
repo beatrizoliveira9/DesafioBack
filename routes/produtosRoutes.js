@@ -1,25 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const validarCamposMiddleware = require('../middlewares/validarCamposMiddleware');
 const produtosController = require('../controllers/produtosController');
 
 // Endpoint para buscar todos os produtos
-router.get('/', produtosController.getAllProdutos);
-
-// Endpoint para buscar um produto pelo ID
-router.get('/:id', produtosController.getProdutoById);
+router.get('/produtos', produtosController.getAllProdutos);
 
 // Endpoint para criar um novo produto
-router.post('/', produtosController.createProduto);
+router.post('/produtos', validarCamposMiddleware, produtosController.createProduto);
 
 // Endpoint para atualizar um produto existente
-router.put('/:id', produtosController.updateProduto);
+router.put('/produtos/:id', validarCamposMiddleware, produtosController.updateProduto);
 
-// Endpoint para excluir um produto existente
-router.delete('/:id', produtosController.deleteProduto);
-
-// Rota para exibir a página de adicionar novo produto
-router.get('/novo', (req, res) => {
-    res.sendFile('novoProduto.html', { root: 'views' });
-});
+// Endpoint para excluir um produto
+router.delete('/produtos/:id', produtosController.deleteProduto);
 
 module.exports = router;
